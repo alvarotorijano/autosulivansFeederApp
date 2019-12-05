@@ -71,4 +71,17 @@
         android:layout_marginTop="88dp"
         android:text="Hora de comida" />
 
+    <EditText
+        android:id="@+id/pesoInput"
+        android:layout_width="118dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/timePicker"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="59dp"
+        android:layout_marginTop="57dp"
+        android:ems="10"
+        android:imeOptions="actionDone"
+        android:inputType="number"
+        android:maxLength="5"/>
+
 </RelativeLayout>

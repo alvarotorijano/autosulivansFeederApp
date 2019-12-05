@@ -16,10 +16,13 @@ import android.os.Handler;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowInsets;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -42,6 +45,7 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
     private ScrollView scrollView;
     private Button lightb;
     private Button timeButton;
+    private EditText pesoInput;
     private boolean registered=false;
 
     public final Calendar c = Calendar.getInstance();
@@ -63,9 +67,17 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
         lightb = (Button)findViewById(R.id.light_button);
         scrollView = (ScrollView) findViewById(R.id.scrollView);
         timeButton = (Button) findViewById(R.id.timePicker);
+        pesoInput = (EditText) findViewById(R.id.pesoInput);
 
-        text.setMovementMethod(new ScrollingMovementMethod());
+        /*
+        pesoInput.setEnabled(false);
+        lightb.setEnabled(false);
+        timeButton.setEnabled(false);
         send.setEnabled(false);
+         */
+        //*/
+        text.setMovementMethod(new ScrollingMovementMethod());
+
 
         b = new Bluetooth(this);
         b.enableBluetooth();
@@ -77,6 +89,21 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
 
         Display("Connecting...");
         b.connectToDevice(b.getPairedDevices().get(pos));
+
+        pesoInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                String peso;
+                //Toast.makeText(getApplicationContext(), "Texto de muestra: " + actionId, Toast.LENGTH_SHORT).show();
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    //peso = String.format("%05d" , Integer.parseInt(pesoInput.getText().toString()));
+                    b.send(String.format("%05d" , Integer.parseInt(pesoInput.getText().toString())));
+                    Toast.makeText(getApplicationContext(), "Peso establecido en: " + Integer.parseInt(pesoInput.getText().toString()) / 1000, Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                return false;
+            }
+        });
 
         send.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -217,12 +244,18 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
     @Override
     public void onConnect(BluetoothDevice device) {
         Display("Connected to "+device.getName()+" - "+device.getAddress());
+        lightb.setEnabled(true);
+        timeButton.setEnabled(true);
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 send.setEnabled(true);
             }
         });
+    }
+
+    public void fijarPeso(){
+        Display("Este es mi texto del peso");
     }
 
     @Override
