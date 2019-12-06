@@ -45,7 +45,10 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
     private ScrollView scrollView;
     private Button lightb;
     private Button timeButton;
+    private Button actualizaRelog;
     private EditText pesoInput;
+    private EditText dosisInput;
+    private EditText gramosInput;
     private boolean registered=false;
 
     public final Calendar c = Calendar.getInstance();
@@ -68,14 +71,20 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
         scrollView = (ScrollView) findViewById(R.id.scrollView);
         timeButton = (Button) findViewById(R.id.timePicker);
         pesoInput = (EditText) findViewById(R.id.pesoInput);
+        dosisInput = (EditText) findViewById(R.id.dosis_input);
+        gramosInput = (EditText) findViewById(R.id.gramos_input);
 
         /*
+        dosisInput.setEnabled(false);
+        gramosInput.setEnabled(false);
         pesoInput.setEnabled(false);
         lightb.setEnabled(false);
         timeButton.setEnabled(false);
         send.setEnabled(false);
-         */
+
         //*/
+
+
         text.setMovementMethod(new ScrollingMovementMethod());
 
 
@@ -90,6 +99,36 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
         Display("Connecting...");
         b.connectToDevice(b.getPairedDevices().get(pos));
 
+        gramosInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                String gramos;
+                //Toast.makeText(getApplicationContext(), "Texto de muestra: " + actionId, Toast.LENGTH_SHORT).show();
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    gramos = "gramos " +  gramosInput.getText().toString();
+                    //b.send("gramos " +  dosisInput.getText().toString());
+
+                    Toast.makeText(getApplicationContext(), gramos, Toast.LENGTH_LONG).show();
+
+                    //Toast.makeText(getApplicationContext(), "Gramos por racion establecido en: " + Integer.parseInt(pesoInput.getText().toString()) / 1000, Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        dosisInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    b.send("dosis " + dosisInput.getText().toString());
+                    Toast.makeText(getApplicationContext(), "Raciones establecido en: " + Integer.parseInt(pesoInput.getText().toString()) / 1000, Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                return false;
+            }
+        });
+
         pesoInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -97,7 +136,7 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
                 //Toast.makeText(getApplicationContext(), "Texto de muestra: " + actionId, Toast.LENGTH_SHORT).show();
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     //peso = String.format("%05d" , Integer.parseInt(pesoInput.getText().toString()));
-                    b.send(String.format("%05d" , Integer.parseInt(pesoInput.getText().toString())));
+                    b.send("peso " + String.format("%05d" , Integer.parseInt(pesoInput.getText().toString())));
                     Toast.makeText(getApplicationContext(), "Peso establecido en: " + Integer.parseInt(pesoInput.getText().toString()) / 1000, Toast.LENGTH_SHORT).show();
                     return true;
                 }
@@ -241,15 +280,36 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
         });
     }
 
+    private void ponerEnHora(){
+        int hora = c.get(Calendar.HOUR_OF_DAY);
+        int minuto = c.get(Calendar.MINUTE);
+        int segundo = c.get(Calendar.SECOND);
+        int dia = c.get(Calendar.DAY_OF_MONTH);
+        int mes = c.get(Calendar.MONTH);
+        int año = c.get(Calendar.YEAR);
+        int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
+
+        String texto = String.format("hora %02d:%02d:%02d %02d-%02d-%04d %01d" , hora, minuto, segundo, dia, mes, año, dayOfWeek);
+        b.send(texto);
+        //Toast.makeText(getApplicationContext(), texto, Toast.LENGTH_LONG).show();
+
+    }
+
     @Override
     public void onConnect(BluetoothDevice device) {
         Display("Connected to "+device.getName()+" - "+device.getAddress());
+        dosisInput.setEnabled(true);
+        gramosInput.setEnabled(true);
+        pesoInput.setEnabled(true);
         lightb.setEnabled(true);
         timeButton.setEnabled(true);
+        send.setEnabled(true);
+
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 send.setEnabled(true);
+                ponerEnHora();
             }
         });
     }
