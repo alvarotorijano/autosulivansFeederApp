@@ -1,5 +1,6 @@
 package me.aflak.bluetoothterminal;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -10,10 +11,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.LightingColorFilter;
+import android.graphics.PorterDuff;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.view.KeyEvent;
@@ -23,9 +28,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -50,6 +57,8 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
     private EditText dosisInput;
     private EditText gramosInput;
     private boolean registered=false;
+    private boolean lightBgColor = false;
+    private ImageView connected;
 
     public final Calendar c = Calendar.getInstance();
 
@@ -58,6 +67,17 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
 
     int hora = 0;
     int minuto = 0;
+
+    public static final void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = activity.getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(activity);
+        }
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +93,8 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
         pesoInput = (EditText) findViewById(R.id.pesoInput);
         dosisInput = (EditText) findViewById(R.id.dosis_input);
         gramosInput = (EditText) findViewById(R.id.gramos_input);
+        connected = (ImageView) findViewById(R.id.connectionSatus);
+
 
         /*
         dosisInput.setEnabled(false);
@@ -83,8 +105,8 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
         send.setEnabled(false);
 
         //*/
-
-
+        connected.setImageResource(R.drawable.disconnect);
+        lightb.setBackground(getResources().getDrawable(R.drawable.rounded_gray));
         text.setMovementMethod(new ScrollingMovementMethod());
 
 
@@ -95,8 +117,13 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
 
         int pos = getIntent().getExtras().getInt("pos");
         name = b.getPairedDevices().get(pos).getName();
+        b.getPairedDevices().get(2)
 
         Display("Connecting...");
+        for (BluetoothDevice d : paired){
+            if(d.getName().contains("Autosulivan's"))
+            names.add(d.getName());
+        }
         b.connectToDevice(b.getPairedDevices().get(pos));
 
         gramosInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -116,6 +143,8 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
                 return false;
             }
         });
+
+
 
         dosisInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -157,13 +186,26 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
         lightb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if (lightBgColor){
+                    lightb.setBackground(getResources().getDrawable(R.drawable.rounded_gray));
+                    //lightb.getBackground().setColorFilter(new LightingColorFilter(0xFFDCDCDC, 0xFFFFFFFF));
+                    //lightb.setBackgroundColor(0xFFDCDCDC);
+                    //lightBgColor = false;
+                }
+                else {
+                    lightb.setBackground(getResources().getDrawable(R.drawable.rounded));
+                    //lightb.getBackground().setColorFilter(new LightingColorFilter(0xFFFFFFFF, 0xFFDCDCDC));
+                    //lightb.setBackgroundColor(0xFFFFFFFF);
+                    //lightBgColor = true;
+                }
+                lightBgColor = !lightBgColor;
                 String msg = "luz";
                 //message.setText("");
                 b.send(msg);
                 Display("You: "+msg);
             }
         });
-
 
         timeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -304,6 +346,7 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
         lightb.setEnabled(true);
         timeButton.setEnabled(true);
         send.setEnabled(true);
+        connected.setImageResource(R.drawable.connect);
 
         this.runOnUiThread(new Runnable() {
             @Override

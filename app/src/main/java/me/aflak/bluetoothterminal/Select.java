@@ -57,6 +57,7 @@ public class Select extends Activity implements PullToRefresh.OnRefreshListener 
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent i = new Intent(Select.this, Chat.class);
                 i.putExtra("pos", position);
+                
                 if(registered) {
                     unregisterReceiver(mReceiver);
                     registered=false;
@@ -113,6 +114,7 @@ public class Select extends Activity implements PullToRefresh.OnRefreshListener 
 
         List<String> names = new ArrayList<>();
         for (BluetoothDevice d : paired){
+            //if(d.getName().contains("Autosulivan's"))
             names.add(d.getName());
         }
 
