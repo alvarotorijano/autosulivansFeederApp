@@ -96,16 +96,15 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
         connected = (ImageView) findViewById(R.id.connectionSatus);
 
 
-        /*
+
         dosisInput.setEnabled(false);
         gramosInput.setEnabled(false);
         pesoInput.setEnabled(false);
         lightb.setEnabled(false);
         timeButton.setEnabled(false);
         send.setEnabled(false);
-
-        //*/
         connected.setImageResource(R.drawable.disconnect);
+
         lightb.setBackground(getResources().getDrawable(R.drawable.rounded_gray));
         text.setMovementMethod(new ScrollingMovementMethod());
 
@@ -117,13 +116,15 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
 
         int pos = getIntent().getExtras().getInt("pos");
         name = b.getPairedDevices().get(pos).getName();
-        b.getPairedDevices().get(2)
+        //b.getPairedDevices().get(2)
 
         Display("Connecting...");
-        for (BluetoothDevice d : paired){
+        /*for (BluetoothDevice d : paired){
             if(d.getName().contains("Autosulivan's"))
             names.add(d.getName());
         }
+        */
+
         b.connectToDevice(b.getPairedDevices().get(pos));
 
         gramosInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -366,6 +367,15 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
         Display("Disconnected!");
         Display("Connecting again...");
         b.connectToDevice(device);
+
+        dosisInput.setEnabled(false);
+        gramosInput.setEnabled(false);
+        pesoInput.setEnabled(false);
+        lightb.setEnabled(false);
+        timeButton.setEnabled(false);
+        send.setEnabled(false);
+        connected.setImageResource(R.drawable.disconnect);
+
     }
 
     @Override

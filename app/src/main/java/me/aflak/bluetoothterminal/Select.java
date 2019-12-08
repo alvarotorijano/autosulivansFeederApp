@@ -55,15 +55,20 @@ public class Select extends Activity implements PullToRefresh.OnRefreshListener 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent(Select.this, Chat.class);
-                i.putExtra("pos", position);
-                
-                if(registered) {
-                    unregisterReceiver(mReceiver);
-                    registered=false;
+                if (bt.getPairedDevices().get(position).getName().contains("Autosulivan's")){
+                    Intent i = new Intent(Select.this, Chat.class);
+                    i.putExtra("pos", position);
+
+                    if(registered) {
+                        unregisterReceiver(mReceiver);
+                        registered=false;
+                    }
+                    startActivity(i); // Esto lanza una nueva activity
+                    finish(); // Esto termina la actividad actual
                 }
-                startActivity(i); // Esto lanza una nueva activity
-                finish(); // Esto termina la actividad actual
+                else{
+                    Toast.makeText(getApplicationContext(), "No es un dispositivo Autosulivan's Valido", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
