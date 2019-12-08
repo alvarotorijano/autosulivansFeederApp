@@ -52,7 +52,7 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
     private ScrollView scrollView;
     private Button lightb;
     private Button timeButton;
-    private Button actualizaRelog;
+    private Button reset;
     private EditText pesoInput;
     private EditText dosisInput;
     private EditText gramosInput;
@@ -88,6 +88,7 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
         message = (EditText)findViewById(R.id.message);
         send = (Button)findViewById(R.id.send);
         lightb = (Button)findViewById(R.id.light_button);
+        reset = (Button)findViewById(R.id.reset_button);
         scrollView = (ScrollView) findViewById(R.id.scrollView);
         timeButton = (Button) findViewById(R.id.timePicker);
         pesoInput = (EditText) findViewById(R.id.pesoInput);
@@ -103,6 +104,7 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
         lightb.setEnabled(false);
         timeButton.setEnabled(false);
         send.setEnabled(false);
+        reset.setEnabled(false);
         connected.setImageResource(R.drawable.disconnect);
 
         lightb.setBackground(getResources().getDrawable(R.drawable.rounded_gray));
@@ -340,19 +342,21 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
 
     @Override
     public void onConnect(BluetoothDevice device) {
-        Display("Connected to "+device.getName()+" - "+device.getAddress());
-        dosisInput.setEnabled(true);
-        gramosInput.setEnabled(true);
-        pesoInput.setEnabled(true);
-        lightb.setEnabled(true);
-        timeButton.setEnabled(true);
-        send.setEnabled(true);
-        connected.setImageResource(R.drawable.connect);
+        Display("Connected to "+ device.getName()+" - "+ device.getAddress());
 
         this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+
+                dosisInput.setEnabled(true);
+                gramosInput.setEnabled(true);
+                pesoInput.setEnabled(true);
+                lightb.setEnabled(true);
+                timeButton.setEnabled(true);
                 send.setEnabled(true);
+                connected.setImageResource(R.drawable.connect);
+                send.setEnabled(true);
+                reset.setEnabled(true);
                 ponerEnHora();
             }
         });
@@ -374,6 +378,7 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
         lightb.setEnabled(false);
         timeButton.setEnabled(false);
         send.setEnabled(false);
+        reset.setEnabled(false);
         connected.setImageResource(R.drawable.disconnect);
 
     }
@@ -391,7 +396,7 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
     @Override
     public void onConnectError(final BluetoothDevice device, String message) {
         Display("Error: "+message);
-        Display("Trying again in 3 sec.");
+        Display("Reintentando en 3 sec.");
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
