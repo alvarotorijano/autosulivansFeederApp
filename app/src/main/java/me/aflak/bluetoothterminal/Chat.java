@@ -1,6 +1,7 @@
 package me.aflak.bluetoothterminal;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -21,7 +22,9 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -33,6 +36,8 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -120,7 +125,7 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
         name = b.getPairedDevices().get(pos).getName();
         //b.getPairedDevices().get(2)
 
-        Display("Connecting...");
+        Display("Conectando...");
         /*for (BluetoothDevice d : paired){
             if(d.getName().contains("Autosulivan's"))
             names.add(d.getName());
@@ -294,6 +299,25 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
 
             case R.id.command_option:
 
+                /*
+                LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+                PopupWindow pw = new PopupWindow(inflater.inflate(R.layout.popup, null, false),100,100, true);
+
+                pw.showAtLocation( findViewById(R.id.message), Gravity.CENTER, 0, 0);
+*/
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("Este es el manual del comedero.\n----------------------------------------\nResponde a los siguientes comandos:\nUltimo\nComida\nHora\nDosis\nGramos\nPeso\nReset\nLuz\nTest\nMan\n\nPara mostrar el uso de los comandos\nescribir: Man [comando]. P.Ej.: Man Luz\n**No distingue mayusculas.")
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                //do things
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+
                 return true;
 
             case R.id.close:
@@ -347,7 +371,7 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
 
     @Override
     public void onConnect(BluetoothDevice device) {
-        Display("Connected to "+ device.getName()+" - "+ device.getAddress());
+        Display("Conectado a: "+ device.getName()+" - "+ device.getAddress());
 
         this.runOnUiThread(new Runnable() {
             @Override
@@ -373,8 +397,8 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
 
     @Override
     public void onDisconnect(BluetoothDevice device, String message) {
-        Display("Disconnected!");
-        Display("Connecting again...");
+        Display("Desconectado!");
+        Display("Reconectando");
         b.connectToDevice(device);
 
         this.runOnUiThread(new Runnable() {
@@ -391,14 +415,20 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
                 connected.setImageResource(R.drawable.disconnect);
             }
         });
-
-
-
     }
 
     @Override
     public void onMessage(String message) {
-        Display(name+": "+message);
+
+        if(message.contains("Se ha actualizado")){
+            String texto = String.format(" %02d:%02d:%02d %02d-%02d-%04d %01d" , c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), c.get(Calendar.SECOND), c.get(Calendar.DAY_OF_MONTH), c.get(Calendar.MONTH), c.get(Calendar.YEAR), c.get(Calendar.DAY_OF_WEEK));
+            message = message + texto;
+        }
+
+        if(message.length() > 2) {
+            Display("* " + message);
+        }
+
     }
 
     @Override
