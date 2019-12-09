@@ -4,4 +4,7 @@
         android:title="Close Connection"/>
     <item android:id="@+id/rate"
         android:title="Rate the App"/>
+    <item
+        android:id="@+id/command_option"
+        android:title="Comandos" />
 </menu>

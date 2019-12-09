@@ -291,6 +291,11 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
+
+            case R.id.command_option:
+
+                return true;
+
             case R.id.close:
                 b.removeCommunicationCallback();
                 b.disconnect();
@@ -372,14 +377,22 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
         Display("Connecting again...");
         b.connectToDevice(device);
 
-        dosisInput.setEnabled(false);
-        gramosInput.setEnabled(false);
-        pesoInput.setEnabled(false);
-        lightb.setEnabled(false);
-        timeButton.setEnabled(false);
-        send.setEnabled(false);
-        reset.setEnabled(false);
-        connected.setImageResource(R.drawable.disconnect);
+        this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                dosisInput.setEnabled(false);
+                gramosInput.setEnabled(false);
+                pesoInput.setEnabled(false);
+                lightb.setEnabled(false);
+                timeButton.setEnabled(false);
+                send.setEnabled(false);
+                reset.setEnabled(false);
+                connected.setImageResource(R.drawable.disconnect);
+            }
+        });
+
+
 
     }
 
