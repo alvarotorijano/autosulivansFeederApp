@@ -85,6 +85,17 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
     }
 
     @Override
+    public void onBackPressed() {
+        b.removeCommunicationCallback();
+        b.disconnect();
+        Intent intent = new Intent(this, Select.class);
+        startActivity(intent);
+        finish();
+    }
+
+
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -363,9 +374,9 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
         int año = c.get(Calendar.YEAR);
         int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
 
-        String texto = String.format("hora %02d:%02d:%02d %02d-%02d-%04d %01d" , hora, minuto, segundo, dia, mes, año, dayOfWeek);
+        String texto = String.format("hora %02d:%02d:%02d %02d-%02d-%04d %01d" , hora, minuto, segundo, dia, mes+1, año, dayOfWeek);
         b.send(texto);
-        //Toast.makeText(getApplicationContext(), texto, Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(), texto, Toast.LENGTH_LONG).show();
 
     }
 
