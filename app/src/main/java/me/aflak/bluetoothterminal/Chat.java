@@ -226,6 +226,16 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
             }
         });
 
+
+        reset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String msg = "reset";
+                b.send(msg);
+                Display("You: "+msg);
+            }
+        });
+
         timeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
