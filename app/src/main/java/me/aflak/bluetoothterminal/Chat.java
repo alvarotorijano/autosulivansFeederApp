@@ -58,6 +58,7 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
     private Button lightb;
     private Button timeButton;
     private Button reset;
+    private Button test;
     private EditText pesoInput;
     private EditText dosisInput;
     private EditText gramosInput;
@@ -111,7 +112,7 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
         dosisInput = (EditText) findViewById(R.id.dosis_input);
         gramosInput = (EditText) findViewById(R.id.gramos_input);
         connected = (ImageView) findViewById(R.id.connectionSatus);
-
+        test = (Button)findViewById(R.id.prueba);
 
 
         dosisInput.setEnabled(false);
@@ -121,6 +122,7 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
         timeButton.setEnabled(false);
         send.setEnabled(false);
         reset.setEnabled(false);
+        test.setEnabled(false);
         connected.setImageResource(R.drawable.disconnect);
 
         lightb.setBackground(getResources().getDrawable(R.drawable.rounded_gray));
@@ -233,6 +235,15 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
             @Override
             public void onClick(View v) {
                 String msg = "reset";
+                b.send(msg);
+                Display("You: "+msg);
+            }
+        });
+
+        test.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String msg = "test";
                 b.send(msg);
                 Display("You: "+msg);
             }
@@ -409,6 +420,7 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
                 connected.setImageResource(R.drawable.connect);
                 send.setEnabled(true);
                 reset.setEnabled(true);
+                test.setEnabled(true);
                 ponerEnHora();
             }
         });
@@ -435,6 +447,7 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
                 timeButton.setEnabled(false);
                 send.setEnabled(false);
                 reset.setEnabled(false);
+                test.setEnabled(false);
                 connected.setImageResource(R.drawable.disconnect);
             }
         });
