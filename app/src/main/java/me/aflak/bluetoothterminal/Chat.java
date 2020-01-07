@@ -148,14 +148,14 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
         gramosInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                String gramos;
+                //String gramos;
                 //Toast.makeText(getApplicationContext(), "Texto de muestra: " + actionId, Toast.LENGTH_SHORT).show();
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    gramos = "gramos " +  gramosInput.getText().toString();
-                    //b.send("gramos " +  dosisInput.getText().toString());
-
-                    Toast.makeText(getApplicationContext(), gramos, Toast.LENGTH_LONG).show();
-
+                    //gramos = "gramos " + String.format("%02d" , Integer.parseInt(gramosInput.getText().toString()));
+                    //b.send("gramos " +  gramosInput.getText().toString());
+                    b.send("gramos " + String.format("%02d" , Integer.parseInt(gramosInput.getText().toString())));
+                    Toast.makeText(getApplicationContext(), "Se suministran " + Integer.parseInt(gramosInput.getText().toString()) + " gramos/racion", Toast.LENGTH_LONG).show();
+                    //b.send("test");
                     //Toast.makeText(getApplicationContext(), "Gramos por racion establecido en: " + Integer.parseInt(pesoInput.getText().toString()) / 1000, Toast.LENGTH_SHORT).show();
                     return true;
                 }
@@ -169,8 +169,10 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    b.send("dosis " + dosisInput.getText().toString());
-                    Toast.makeText(getApplicationContext(), "Raciones establecido en: " + Integer.parseInt(pesoInput.getText().toString()) / 1000, Toast.LENGTH_SHORT).show();
+                    //b.send("peso " + String.format("%05d" , Integer.parseInt(pesoInput.getText().toString())));
+                    b.send("dosis " + String.format("%02d" , Integer.parseInt(dosisInput.getText().toString())));
+                    //b.send("dosis " + dosisInput.getText());
+                    Toast.makeText(getApplicationContext(), "Raciones establecido en: " + Integer.parseInt(dosisInput.getText().toString()), Toast.LENGTH_SHORT).show();
                     return true;
                 }
                 return false;
