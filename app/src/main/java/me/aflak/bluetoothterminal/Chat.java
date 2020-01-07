@@ -189,7 +189,7 @@ public class Chat extends AppCompatActivity implements Bluetooth.CommunicationCa
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     //peso = String.format("%05d" , Integer.parseInt(pesoInput.getText().toString()));
                     b.send("peso " + String.format("%05d" , Integer.parseInt(pesoInput.getText().toString())));
-                    Toast.makeText(getApplicationContext(), "Peso establecido en: " + Integer.parseInt(pesoInput.getText().toString()) / 1000, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Peso establecido en: " + Integer.parseInt(pesoInput.getText().toString()), Toast.LENGTH_SHORT).show();
                     return true;
                 }
                 return false;
